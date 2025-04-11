@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/me', verifyToken, getCurrentUser);
+router.get('/check', verifyToken, getCurrentUser);
 router.post('/logout', logoutUser);
 router.post('/logout', (req, res) => {
     res.clearCookie('token');

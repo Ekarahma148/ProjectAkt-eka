@@ -24,13 +24,7 @@ const Transaction = () => {
   const fetchTransactions = useCallback(async () => {
     try {
       const res = await axios.get("http://localhost:5000/transactions", {
-        params: {
-          search: searchTerm,
-          type: filterType,
-          sort: sortField,
-          order: sortOrder,
-          page,
-        },
+        params: { search: searchTerm, type: filterType, sort: sortField, order: sortOrder, page },
         withCredentials: true,
       });
       setTransactions(res.data.data);
@@ -46,10 +40,10 @@ const Transaction = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const newErrors = {};
     if (!description.trim()) newErrors.description = "Description is required";
-    if (!amount || isNaN(amount) || Number(amount) <= 0)
-      newErrors.amount = "Amount must be a positive number";
+    if (!amount || isNaN(amount) || Number(amount) <= 0) newErrors.amount = "Amount must be a positive number";
     if (!date) newErrors.date = "Date is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -58,21 +52,15 @@ const Transaction = () => {
     }
 
     try {
+      const payload = { description, amount, type, date };
       if (editingId) {
-        await axios.put(
-          `http://localhost:5000/transactions/${editingId}`,
-          { description, amount, type, date },
-          { withCredentials: true }
-        );
+        await axios.put(`http://localhost:5000/transactions/${editingId}`, payload, { withCredentials: true });
         setMessage("Transaction updated!");
       } else {
-        await axios.post(
-          "http://localhost:5000/transactions",
-          { description, amount, type, date },
-          { withCredentials: true }
-        );
+        await axios.post("http://localhost:5000/transactions", payload, { withCredentials: true });
         setMessage("Transaction added!");
       }
+
       setDescription("");
       setAmount("");
       setType("income");
@@ -80,16 +68,25 @@ const Transaction = () => {
       setEditingId(null);
       setErrors({});
       fetchTransactions();
+
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleLogout = async () => {
+  const handleEdit = (tx) => {
+    setDescription(tx.description);
+    setAmount(tx.amount);
+    setType(tx.type);
+    setDate(tx.date);
+    setEditingId(tx.id);
+  };
+
+  const handleDelete = async (id) => {
     try {
-      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
-      window.location.href = "/login";
+      await axios.delete(`http://localhost:5000/transactions/${id}`, { withCredentials: true });
+      fetchTransactions();
     } catch (err) {
       console.error(err);
     }
@@ -100,18 +97,10 @@ const Transaction = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
-  const handleEdit = (item) => {
-    setDescription(item.description);
-    setAmount(item.amount);
-    setType(item.type);
-    setDate(item.date);
-    setEditingId(item.id);
-  };
-
-  const handleDelete = async (id) => {
+  const handleLogout = async () => {
     try {
-      await axios.delete(`http://localhost:5000/transactions/${id}`, { withCredentials: true });
-      fetchTransactions();
+      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+      window.location.href = "/login";
     } catch (err) {
       console.error(err);
     }
@@ -136,6 +125,7 @@ const Transaction = () => {
         </div>
       )}
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
         <div>
           <input
@@ -159,11 +149,7 @@ const Transaction = () => {
           {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
         </div>
 
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="p-2 rounded border dark:bg-gray-800"
-        >
+        <select value={type} onChange={(e) => setType(e.target.value)} className="p-2 rounded border dark:bg-gray-800">
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
@@ -184,6 +170,7 @@ const Transaction = () => {
         </button>
       </form>
 
+      {/* Filter & Search */}
       <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <input
           type="text"
@@ -219,6 +206,7 @@ const Transaction = () => {
         </div>
       </div>
 
+      {/* List Transactions */}
       <div className="space-y-2">
         {transactions.map((tx) => (
           <div key={tx.id} className="p-4 border rounded-lg shadow dark:border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
@@ -234,6 +222,7 @@ const Transaction = () => {
         ))}
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center items-center mt-6 gap-2">
         {Array.from({ length: totalPages }).map((_, idx) => (
           <button
@@ -250,3 +239,4 @@ const Transaction = () => {
 };
 
 export default Transaction;
+ 

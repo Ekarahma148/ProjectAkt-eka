@@ -1,13 +1,10 @@
+// src/pages/Register.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({
-    gmail: "",
-    username: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ gmail: "", username: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -18,7 +15,7 @@ const RegisterPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API}/register`, form);
+      await axios.post(`${import.meta.env.VITE_API}/auth/register`, form);
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.msg || "Register gagal");
@@ -66,6 +63,12 @@ const RegisterPage = () => {
         >
           Register
         </button>
+        <p className="text-sm mt-4 text-center">
+          Sudah punya akun?{" "}
+          <a href="/login" className="text-blue-500 hover:underline">
+            Login di sini
+          </a>
+        </p>
       </form>
     </div>
   );

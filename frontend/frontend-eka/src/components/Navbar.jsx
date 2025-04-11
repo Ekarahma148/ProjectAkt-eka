@@ -1,16 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+// src/components/Navbar.jsx
+import { Link } from "react-router-dom";
 
-const Navbar = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    await axios.delete(`${import.meta.env.VITE_API}/logout`, {
-      withCredentials: true,
-    });
-    navigate("/login");
-  };
-
+const Navbar = ({ onLogout }) => {
   return (
     <nav className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800 dark:text-white">
       <div className="font-bold text-xl">AkuntansiApp</div>
@@ -19,7 +10,7 @@ const Navbar = () => {
           Transaksi
         </Link>
         <button
-          onClick={handleLogout}
+          onClick={onLogout}
           className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
         >
           Logout

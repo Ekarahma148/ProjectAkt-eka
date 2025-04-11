@@ -1,8 +1,9 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
   const [form, setForm] = useState({ gmail: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,9 +15,10 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API}/login`, form, {
+      await axios.post(`${import.meta.env.VITE_API}/auth/login`, form, {
         withCredentials: true,
       });
+      onLogin();
       navigate("/transaksi");
     } catch (err) {
       setError(err.response?.data?.msg || "Login gagal");
@@ -55,6 +57,12 @@ const LoginPage = () => {
         >
           Login
         </button>
+        <p className="text-sm mt-4 text-center">
+          Belum punya akun?{" "}
+          <a href="/register" className="text-blue-500 hover:underline">
+            Daftar di sini
+          </a>
+        </p>
       </form>
     </div>
   );

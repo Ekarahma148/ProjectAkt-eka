@@ -1,6 +1,8 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Transactions from './pages/Transactions';
@@ -11,7 +13,9 @@ function App() {
 
   const checkAuth = async () => {
     try {
-      await axios.get('http://localhost:5000/api/auth/check', { withCredentials: true });
+      await axios.get(`${import.meta.env.VITE_API}/auth/check`, {
+        withCredentials: true,
+      });
       setIsAuthenticated(true);
     } catch {
       setIsAuthenticated(false);
@@ -22,22 +26,25 @@ function App() {
     checkAuth();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API}/logout`, {}, {
+        withCredentials: true,
+      });
+      setIsAuthenticated(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Router>
+      {isAuthenticated && <Navbar onLogout={handleLogout} />}
       <Routes>
-      {isAuthenticated && <Navbar onLogout={() => setIsAuthenticated(false)} />}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/transactions" /> : <Navigate to="/login" />} />
-        <Route path="/login" element={<Login onLogin={checkAuth} />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/transaksi" /> : <Navigate to="/register" />} />
         <Route path="/register" element={<Register />} />
-        <Route
-  path="/transaksi"
-  element={
-    <PrivateRoute>
-      <TransactionPage />
-    </PrivateRoute>
-  }
-/>
-        <Route path="/transactions" element={isAuthenticated ? <Transactions /> : <Navigate to="/login" />} />
+        <Route path="/login" element={<Login onLogin={checkAuth} />} />
+        <Route path="/transaksi" element={isAuthenticated ? <Transactions /> : <Navigate to="/login" />} />
         <Route path="*" element={<h1 className="text-center mt-10">404 Not Found</h1>} />
       </Routes>
     </Router>
