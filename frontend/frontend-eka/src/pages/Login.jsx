@@ -1,71 +1,59 @@
-// src/pages/Login.jsx
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
-const LoginPage = ({ onLogin }) => {
-  const [form, setForm] = useState({ gmail: "", password: "" });
-  const [error, setError] = useState("");
+export default function Login() {
+  const [gmail, setGmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API}/auth/login`, form, {
-        withCredentials: true,
-      });
-      onLogin();
-      navigate("/transaksi");
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { gmail, password }, { withCredentials: true });
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.msg || "Login gagal");
+      setError(err.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 dark:bg-gray-900 dark:text-white">
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-sm p-6 border rounded shadow dark:bg-gray-800"
-      >
-        <h2 className="text-xl font-bold mb-4 text-center">Login</h2>
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-        <input
-          type="email"
-          name="gmail"
-          placeholder="Email"
-          value={form.gmail}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2 border rounded dark:bg-gray-700"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-          className="w-full mb-4 p-2 border rounded dark:bg-gray-700"
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Login
-        </button>
-        <p className="text-sm mt-4 text-center">
-          Belum punya akun?{" "}
-          <a href="/register" className="text-blue-500 hover:underline">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-4 text-center">Login Akun</h1>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={gmail}
+            onChange={(e) => setGmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          >
+            Login
+          </button>
+        </form>
+        <p className="mt-4 text-center text-sm">
+          Belum punya akun?{' '}
+          <Link to="/register" className="text-blue-600 underline">
             Daftar di sini
-          </a>
+          </Link>
         </p>
-      </form>
+      </div>
     </div>
   );
-};
-
-export default LoginPage;
+}

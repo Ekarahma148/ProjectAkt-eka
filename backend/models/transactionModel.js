@@ -1,34 +1,64 @@
-// backend/models/taskModel.js
 import pool from '../db/db.js';
 
-export const createTask = async (title, description, status, projectId) => {
+export const createTransaction = async ({ description, amount, type, date, user_id }) => {
   const res = await pool.query(
-    'INSERT INTO tasks (title, description, status, project_id) VALUES ($1, $2, $3, $4) RETURNING *',
-    [title, description, status, projectId]
+    `INSERT INTO transactions (description, amount, type, date, user_id)
+     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+    [description, amount, type, date, user_id]
   );
   return res.rows[0];
 };
 
-export const getTasksByProject = async (projectId) => {
-  const res = await pool.query(
-    'SELECT * FROM tasks WHERE project_id = $1 ORDER BY id DESC',
-    [projectId]
-  );
+export const getTransactions = async ({ user_id, search, sort, type, page, limit }) => {
+  const offset = (page - 1) * limit;
+  let query = `SELECT * FROM transactions WHERE user_id = $1`;
+  let values = [user_id];
+
+  if (search) {
+    query += ` AND description ILIKE $${values.length + 1}`;
+    values.push(`%${search}%`);
+  }
+
+  if (type) {
+    query += ` AND type = $${values.length + 1}`;
+    values.push(type);
+  }
+
+  if (sort === 'asc' || sort === 'desc') {
+    query += ` ORDER BY date ${sort}`;
+  } else {
+    query += ` ORDER BY date DESC`;
+  }
+
+  query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+  values.push(limit, offset);
+
+  const res = await pool.query(query, values);
   return res.rows;
 };
 
-export const updateTaskStatus = async (taskId, status) => {
+export const updateTransaction = async (id, user_id, data) => {
+  const { description, amount, type, date } = data;
   const res = await pool.query(
-    'UPDATE tasks SET status = $1 WHERE id = $2 RETURNING *',
-    [status, taskId]
+    `UPDATE transactions SET description = $1, amount = $2, type = $3, date = $4
+     WHERE id = $5 AND user_id = $6 RETURNING *`,
+    [description, amount, type, date, id, user_id]
   );
   return res.rows[0];
 };
 
-export const deleteTask = async (taskId) => {
+export const deleteTransaction = async (id, user_id) => {
   const res = await pool.query(
-    'DELETE FROM tasks WHERE id = $1 RETURNING *',
-    [taskId]
+    `DELETE FROM transactions WHERE id = $1 AND user_id = $2 RETURNING *`,
+    [id, user_id]
+  );
+  return res.rows[0];
+};
+
+export const getTransactionById = async (id, user_id) => {
+  const res = await pool.query(
+    `SELECT * FROM transactions WHERE id = $1 AND user_id = $2`,
+    [id, user_id]
   );
   return res.rows[0];
 };
