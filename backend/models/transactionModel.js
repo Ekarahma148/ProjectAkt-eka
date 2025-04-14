@@ -9,33 +9,34 @@ export const createTransaction = async ({ description, amount, type, date, user_
   return res.rows[0];
 };
 
-export const getTransactions = async ({ user_id, search, sort, type, page, limit }) => {
+export async function getTransactions({ user_id, search, sort, type, page, limit }) {
   const offset = (page - 1) * limit;
+
   let query = `SELECT * FROM transactions WHERE user_id = $1`;
-  let values = [user_id];
+  let params = [user_id];
+  let paramIndex = 2;
 
   if (search) {
-    query += ` AND description ILIKE $${values.length + 1}`;
-    values.push(`%${search}%`);
+    query += ` AND description ILIKE $${paramIndex}`;
+    params.push(`%${search}%`);
+    paramIndex++;
   }
 
   if (type) {
-    query += ` AND type = $${values.length + 1}`;
-    values.push(type);
+    query += ` AND type = $${paramIndex}`;
+    params.push(type);
+    paramIndex++;
   }
 
-  if (sort === 'asc' || sort === 'desc') {
-    query += ` ORDER BY date ${sort}`;
-  } else {
-    query += ` ORDER BY date DESC`;
-  }
+  query += ` ORDER BY date ${sort === 'asc' ? 'ASC' : 'DESC'} LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  params.push(limit);
+  params.push(offset);
 
-  query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
-  values.push(limit, offset);
+  const result = await pool.query(query, params);
+  return result.rows;
+}
 
-  const res = await pool.query(query, values);
-  return res.rows;
-};
+
 
 export const updateTransaction = async (id, user_id, data) => {
   const { description, amount, type, date } = data;

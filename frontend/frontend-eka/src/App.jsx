@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -9,6 +8,7 @@ import TransactionList from './pages/TransactionList';
 import AddTransaction from './pages/AddTransaction';
 import EditTransaction from './pages/EditTransaction';
 import NotFound from './pages/NotFound';
+
 const ProtectedRoute = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
   const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get(`${import.meta.env.VITE_API_URL}/me`, {
+        await axios.get(`${import.meta.env.VITE_API_URL}/auth/me`, {
           withCredentials: true,
         });
         setIsAuth(true);

@@ -18,7 +18,7 @@ export default function TransactionList() {
         withCredentials: true,
         params: {
           search,
-          filter: filterType,
+          type: filterType,
           sort: sortOrder,
           page,
           limit,
@@ -53,7 +53,7 @@ export default function TransactionList() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
             <h2 className="text-xl font-bold">Daftar Transaksi</h2>
-            <Link to="/add" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+            <Link to="/transactions/add" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
               + Tambah Transaksi
             </Link>
           </div>
