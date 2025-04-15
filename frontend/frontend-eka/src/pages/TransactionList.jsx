@@ -111,7 +111,7 @@ export default function TransactionList() {
                   <div>Rp {parseFloat(t.amount).toLocaleString()}</div>
                   <div className="flex justify-start md:justify-center gap-2">
                     <Link
-                      to={`/edit/${t.id}`}
+                      to={`/transactions/edit/${t.id}`}
                       className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded"
                     >
                       Edit
@@ -137,14 +137,14 @@ export default function TransactionList() {
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
               disabled={page === 1}
             >
-              Sebelumnya
+              prev
             </button>
             <span className="px-4 py-2 font-medium text-gray-700">Halaman {page}</span>
             <button
               className="px-4 py-2 border rounded hover:bg-gray-200"
               onClick={() => setPage((prev) => prev + 1)}
             >
-              Selanjutnya
+              next
             </button>
           </div>
         </div>

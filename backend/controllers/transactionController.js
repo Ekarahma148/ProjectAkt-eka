@@ -17,7 +17,7 @@ export const addTransaction = async (req, res) => {
     const transaction = await createTransaction({ description, amount, type, date, user_id });
     res.status(201).json(transaction);
   } catch (error) {
-    res.status(500).json({ message: 'Gagal menambahkan transaksi.' });
+    res.status(500).json({ message: 'Gagal menambahkan transaksi.', error: error.message });
   }
 };
 
@@ -35,7 +35,7 @@ export const getAllTransactions = async (req, res) => {
       limit: parseInt(limit),
     });
 
-    res.json(transactions);
+    return res.status(200).json({ transactions });
   } catch (error) {
     res.status(500).json({ message: 'Gagal mengambil data transaksi.' });
   }

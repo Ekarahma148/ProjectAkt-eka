@@ -44,6 +44,7 @@ export default function EditTransaction() {
       await axios.put(`${import.meta.env.VITE_API_URL}/transactions/${id}`, form, {
         withCredentials: true,
       });
+      alert("Transaksi berhasil diperbarui!")
       navigate('/transactions');
     } catch (err) {
       console.error('Gagal update transaksi:', err);
@@ -53,7 +54,7 @@ export default function EditTransaction() {
   return (
     <>
       <Header />
-      <main className="min-h-[80vh] bg-gray-50 p-6">
+      <div className="min-h-[80vh] bg-gray-50 p-6">
         <div className="max-w-xl mx-auto bg-white p-6 rounded shadow">
           <h2 className="text-2xl font-bold mb-4">Edit Transaksi</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -119,7 +120,7 @@ export default function EditTransaction() {
             </div>
           </form>
         </div>
-      </main>
+      </div>
       <Footer />
     </>
   );

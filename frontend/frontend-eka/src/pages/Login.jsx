@@ -19,16 +19,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login Akun</h1>
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-4">
+<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
+      <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-md transition-transform transform hover:scale-105 hover:shadow-2xl">
+        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Login Akun</h1>    
+        {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}        <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={gmail}
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"            value={gmail}
             onChange={(e) => setGmail(e.target.value)}
             required
           />
@@ -42,15 +40,13 @@ export default function Login() {
           />
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-          >
+            className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-200"          >
             Login
           </button>
         </form>
         <p className="mt-4 text-center text-sm">
           Belum punya akun?{' '}
-          <Link to="/register" className="text-blue-600 underline">
-            Daftar di sini
+          <Link to="/register" className="text-blue-600 underline hover:text-blue-700">            Daftar di sini
           </Link>
         </p>
       </div>

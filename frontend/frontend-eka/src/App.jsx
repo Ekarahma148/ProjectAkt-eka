@@ -8,6 +8,7 @@ import TransactionList from './pages/TransactionList';
 import AddTransaction from './pages/AddTransaction';
 import EditTransaction from './pages/EditTransaction';
 import NotFound from './pages/NotFound';
+import About from './pages/About';
 
 const ProtectedRoute = ({ children }) => {
   const [isAuth, setIsAuth] = useState(null);
@@ -40,6 +41,7 @@ const ProtectedRoute = ({ children }) => {
 
 
 function App() {
+  
   return (
     <Router>
       <Routes>
@@ -76,6 +78,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditTransaction />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <About />
             </ProtectedRoute>
           }
         />
