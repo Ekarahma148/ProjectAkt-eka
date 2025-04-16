@@ -31,7 +31,7 @@ export default function AddTransaction() {
     } catch (err) {
       setError(err.response?.data?.message || 'Gagal menambahkan transaksi');
     }finally {
-      setLoading(false); // <-- berhenti loading
+      setLoading(false); 
     }
   };
 

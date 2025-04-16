@@ -25,7 +25,7 @@ export default function EditTransaction() {
           description: data.description,
           amount: data.amount,
           type: data.type,
-          date: data.date.slice(0, 10), // format YYYY-MM-DD
+          date: data.date.slice(0, 10), 
         });
       } catch (err) {
         console.error('Gagal memuat data transaksi:', err);

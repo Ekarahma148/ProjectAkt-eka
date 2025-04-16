@@ -24,7 +24,7 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Hitung total pakai useMemo biar optimal
+  // Hitung total
   const income = useMemo(() =>
     transactions
       .filter((t) => t.type === 'income')
